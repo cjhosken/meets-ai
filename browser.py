@@ -1,4 +1,3 @@
-  
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
@@ -22,6 +21,7 @@ opt.add_experimental_option("prefs", { \
 })
 
 driver = webdriver.Chrome(options=opt, executable_path='C:\Program Files (x86)\chromedriver.exe')
+
 url = driver.command_executor._url
 id = driver.session_id
 
