@@ -1,1 +1,1 @@
-# meets-ai
+# meets-ai-core

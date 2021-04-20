@@ -1,58 +1,54 @@
+from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time
+import time, sys
 import ai.response as bot
 
-def chat(driver, id, callActive, chatActive, thresh):
-    window = driver.window_handles[id]
+
+def main():
+    f = open("data.txt")
+    data = f.readlines(0)
+
+    driver = webdriver.Remote(command_executor=data[0][:-1])
+    driver.session_id = data[1]
+
+    window = driver.window_handles[int(sys.argv[1])]
     driver.switch_to.window(window)
-    update = False
-    try:
-        chatBoxWindow = "//*[@id='ow3']/div[1]/div/div[9]/div[3]/div[4]/div/div[2]/div[2]/div[2]/span[2]/div"
-        onlineUsers = driver.find_element_by_xpath("//*[@id='ow3']/div[1]/div/div[9]/div[3]/div[4]/div/div[2]/div[2]/div[1]/div[1]/span/div/span[2]").text.lower()
-        onlineUsers = onlineUsers[1:][:-1]
-        chatBoxEl = driver.find_element_by_xpath(f'{chatBoxWindow}/div[4]/div[1]/div[1]/div[2]/textarea')
 
-        if chatActive:
-            chatboxPath = f"{chatBoxWindow}/div[2]/div[last()]"
-            time.sleep(2)
-            chatUser = driver.find_element_by_xpath(f"{chatboxPath}/div[1]/div[1]").text.lower()
-            chatText = driver.find_element_by_xpath(f"{chatboxPath}/div[last()]/div[last()]").text.lower()
-            time.sleep(2)
-            if chatUser != "you":
-                msg, tag, conf = bot.chatbot_response(chatText)
-                if msg is not None:
-                    if msg != ' ':
-                        if conf >= thresh:
-                            update = True
-                            chatBoxEl.send_keys(msg, Keys.ENTER)
-                    
-                if conf < thresh or msg == " ":
-                    f = open("ai/data/unknowns.txt", "a")
-                    write = True
-                    for line in open("ai/data/unknowns.txt").readlines():
-                        line = line.rstrip("\n")
-                        if line == chatText:
-                            write = False
-                            break
+    chatBoxWindow = "//*[@id='ow3']/div[1]/div/div[9]/div[3]/div[4]/div/div[2]/div[2]/div[2]/span[2]/div"
+    onlineUsers = driver.find_element_by_xpath("//*[@id='ow3']/div[1]/div/div[9]/div[3]/div[4]/div/div[2]/div[2]/div[1]/div[1]/span/div/span[2]").text.lower()
+    onlineUsers = onlineUsers[1:][:-1]
+    chatBoxEl = driver.find_element_by_xpath(f'{chatBoxWindow}/div[4]/div[1]/div[1]/div[2]/textarea')
+    print("Online: " + onlineUsers)
 
-                    if write:
-                        f.write(chatText + "\n")
-                        
+    while True:
+        chatboxPath = f"{chatBoxWindow}/div[2]/div[last()]"
+        time.sleep(2)
+        chatUser = driver.find_element_by_xpath(f"{chatboxPath}/div[1]/div[1]").text.lower()
+        chatText = driver.find_element_by_xpath(f"{chatboxPath}/div[last()]/div[last()]").text.lower()
+        time.sleep(2)
+        if chatUser != "you":
+            msg, tag, conf = bot.chatbot_response(chatText)
+            if msg is not None:
+                if msg != ' ':
+                    chatBoxEl.send_keys(msg, Keys.ENTER)
+            
+            print("> " + chatUser + " --> " + chatText)
+            print("Confidence: " + str(conf))
+            print("Tag: " + str(tag))
+            print("Response: " + str(msg))
+            print("\n")
 
-                    f.close()
-    except Exception as e:
-        onlineUsers = 0
-        print(e)
-    
-    if not update:
-        msg = ""
-        chatText = ""
-        conf = 0.0
+            if conf == 0.0:
+                f = open("ai/data/unknowns.txt", "a")
+                write = True
+                for line in open("ai/data/unknowns.txt").readlines():
+                    if line == chatText:
+                        write = False
+                        break
 
-    return update, chatText, str(msg), conf, onlineUsers
+                if write:
+                    f.write(chatText)
 
-    print("> " + chatUser + " --> " + chatText)
-    print("Confidence: " + str(conf))
-    print("Tag: " + str(tag))
-    print("Response: " + str(msg))
-    print("\n")
+                f.close()
+
+main()
