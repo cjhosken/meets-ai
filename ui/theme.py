@@ -94,7 +94,7 @@ class LightTheme(Theme):
         self._closeIcon = QtGui.QIcon("ui/icons/light/close_black.svg")
         self._bugIcon = QtGui.QIcon("ui/icons/light/bug_black.svg")
         self._modeIcon = QtGui.QIcon("ui/icons/light/dark_mode_black.svg")
-        self._startIcon = QtGui.QIcon("ui/icons/light/start_black.svg")
-        self._stopIcon = QtGui.QIcon("ui/icons/light/stop_black.svg")
+        self._startIcon = QtGui.QIcon("ui/icons/light/start_grey.svg")
+        self._stopIcon = QtGui.QIcon("ui/icons/light/stop_white.svg")
 
         self.getGraphTheme()

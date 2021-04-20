@@ -203,7 +203,7 @@ class MeetsAiApp(object):
         )
 
         self.logo.setIcon(self._theme._logoIcon)
-        self.logo.setIconSize(QtCore.QSize(100, 100))
+        self.logo.setIconSize(QtCore.QSize(55, 55))
         self.logo.setStyleSheet(
             "background: transparent;"
         )
@@ -216,7 +216,7 @@ class MeetsAiApp(object):
         )
 
         self.closeButton.setIcon(self._theme._closeIcon)
-        self.closeButton.setIconSize(QtCore.QSize(55, 55))
+        self.closeButton.setIconSize(QtCore.QSize(25, 25))
         self.closeButton.setStyleSheet(
             "#closeButton:hover { \n"
             f"background-color: {self._theme._hoverAccent};\n"
@@ -224,7 +224,7 @@ class MeetsAiApp(object):
         )
 
         self.minButton.setIcon(self._theme._minimizeIcon)
-        self.minButton.setIconSize(QtCore.QSize(30, 30))
+        self.minButton.setIconSize(QtCore.QSize(25, 25))
         self.minButton.setStyleSheet(
             "#minButton:hover { \n"
             f"background-color: {self._theme._hover};\n"
@@ -234,7 +234,7 @@ class MeetsAiApp(object):
         self.hLine.setStyleSheet(f"background: {self._theme._primary};")
 
         self.bugButton.setIcon(self._theme._bugIcon)
-        self.bugButton.setIconSize(QtCore.QSize(30, 30))
+        self.bugButton.setIconSize(QtCore.QSize(25, 25))
         self.bugButton.setStyleSheet(
             "#bugButton:hover { \n"
             f"background-color: {self._theme._hover};\n"
@@ -242,7 +242,7 @@ class MeetsAiApp(object):
         )
 
         self.themeButton.setIcon(self._theme._modeIcon)
-        self.themeButton.setIconSize(QtCore.QSize(30, 30))
+        self.themeButton.setIconSize(QtCore.QSize(25, 25))
         self.themeButton.setStyleSheet(
             "#themeButton:hover { \n"
             f"background-color: {self._theme._hover};\n"
@@ -356,11 +356,13 @@ class MeetsAiApp(object):
             "}"
         )
 
+        self.window.setAlignment(QtCore.Qt.AlignCenter)
         self.window.setFont(self._theme._font)
         self.window.setStyleSheet(
             f"background: {self._theme._subpanel};\n"
             "border: none;\n"
             f"color: {self._theme._primary};\n"
+            "text-align: center;\n"
             f"font-size: {self._theme._fontTextSize};\n"
             f"font-weight: {self._theme._fontWeight};"
         )
