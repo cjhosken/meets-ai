@@ -2,3 +2,4 @@
 
 _email = "user@gmail.com"
 _password = "password"
+_defaultTheme = "dark"

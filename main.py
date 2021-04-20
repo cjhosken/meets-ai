@@ -1,61 +1,59 @@
-from PyQt5 import QtGui
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from gui import MeetsAiApp
-import sys
+from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow
+from ui.gui import MeetsAiApp
+from selenium import webdriver
 import webbrowser
 import ctypes
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-import time
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import time
+import sys
 import threading
-import config
 import chat
 
-myappid = 'christopherhosken.meetsai.app.2' # arbitrary string
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 class MeetsAi(QMainWindow, MeetsAiApp):
     def __init__(self):
         super(MeetsAi, self).__init__()
         self.app = MeetsAiApp()
         self.app.setupUI(self)
+
         self.app.navHeader.mouseMoveEvent = self.moveWindow
+
         self.app.closeButton.clicked.connect(self.closeApp)
+
         self.app.minButton.clicked.connect(self.showMinimized)
+
         self.app.bugButton.clicked.connect(self.reportBug)
+
         self.app.themeButton.clicked.connect(self.app.toggleTheme)
+
         self.app.appButton.clicked.connect(self.run)
+
         self.app.window.textChanged.connect(self.limitText)
 
         self._thread = None
         self._driver = None
+        self._running = False
 
     def run(self):
         if self.app.appButton.isChecked():
             self._driver = self.connectBrowser()
-            if self._driver == None:
-                print("ERROR")
-            else:
+            if self._driver is not None:
                 self._tabid = self.app.window.text()
                 if len(self._tabid) <= 0 or not self._tabid.isdigit():
                     self._tabid = 1
                 else:
                     self._tabid = int(self._tabid)
                 
-                if self._thread is not None:
-                    self._thread.start()
-                else:
+                if self._thread is None:
                     self._thread = threading.Thread(target=self.chat)
-                    self._thread.start()
+
+                self._thread.start()
+                self._running = True
+            else:
+                print("ERROR")
         else:
-            if self._thread is not None:
+            if self._running:
                 self._thread.join()
                 self._thread = None
-            
+                self._running = False
 
     def connectBrowser(self):
             try:
@@ -65,7 +63,8 @@ class MeetsAi(QMainWindow, MeetsAiApp):
                 driver.session_id = d[1]
                 return driver
             except Exception as e:
-                self.app.appButton.setChecked = False
+                self.app.appButton.setChecked(False)
+                self.app.updateEffects()
                 print(e)
                 print("ERROR: Try running the browser.py file first.")
                 return None
@@ -87,7 +86,7 @@ class MeetsAi(QMainWindow, MeetsAiApp):
         self.app.responsePanel.setText(res)
         self.app.usersLabel.setText(users)
 
-    def reportBug():
+    def reportBug(self):
         webbrowser.open("https://github.com/Christopher-Hosken/meets-ai/issues")
 
     def limitText(self):
@@ -106,14 +105,16 @@ class MeetsAi(QMainWindow, MeetsAiApp):
             event.accept()
 
     def closeApp(self):
-        self.app.appButton.setChecked(False)
-        if self._thread is not None:
+        if self._running:
+            self.app.appButton.setChecked(False)
             self._thread.join()
             self._thread = None
-
+            self._running = False
+            
         QCoreApplication.instance().quit()
 
 def main():
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('christopherhosken.meetsai.app.2' )
     app = QApplication(sys.argv)
     window = MeetsAi()
     window.setWindowFlags(Qt.FramelessWindowHint)

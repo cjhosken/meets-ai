@@ -1,45 +1,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
-from pyqtgraph.graphicsItems.ScatterPlotItem import Symbols
+import ui.theme as theme
+import config
 
 class MeetsAiApp(object):
-    _theme = "dark"
-    _baseColor = "#FFFFFF"
-    _headerColor = "#FFFFFF"
-    _panelColor = "#FFFFFF"
-    _upperPanelColor = "#FFFFFF"
-    _textColor = "#FFFFFF"
-    _disabledTextColor = "#FFFFFF"
-    _activeTextColor = "#FFFFFF" 
-    _hoverColor = "rgba(255, 255, 255, 0.1)"
+    if config._defaultTheme == "dark":
+        _theme = theme.DarkTheme()
+    else:
+        _theme = theme.LightTheme()
 
-    _font = QtGui.QFont()
-    _font.setFamily("Segoe UI")
-    _font.setWeight(100)
-
-    _headerShadow = QtGui.QColor(0, 0, 0, 255)
-    _shadow = QtGui.QColor(0, 0, 0, 30)
-    _glow = QtGui.QColor(0, 180, 255)
-    _glowColor = "#00B4FF"
-    _glowTransparent = "rgba(0, 180, 255, 128)"
-
-    _logo = QtGui.QIcon()
-
-    _logoIconPath = ""
-    _minIconPath = ""
-    _closeIconPath = ""
-    _bugIconPath = ""
-    _themeIconPath = ""
-    _startIconPath = ""
-    _stopIconPath = ""
-
-    _data = [0, 0]
-    _datalabel =[0, 1]
-
-    _pen = pg.mkPen(color=(0, 180, 255), width=1, style=QtCore.Qt.SolidLine)
-    _symPen = pg.mkPen(color=(0, 180, 255), width=1, style=QtCore.Qt.SolidLine)
-    _symBrush = pg.mkBrush(color=(0, 180, 255, 128))
+    _graphData = [0, 0]
+    _graphDataLabel = [0, 1]
 
     def setupUI(self, root):
         self.root = root
@@ -49,7 +20,6 @@ class MeetsAiApp(object):
         self.root.resize(900, 800)
         self.root.setMinimumSize(QtCore.QSize(900, 800))
         self.root.setMaximumSize(QtCore.QSize(900, 800))
-        self.root.setFont(self._font)
         self.root.setWindowTitle("Meets Ai")
 
         self.rootWidget = QtWidgets.QWidget(self.root)
@@ -68,7 +38,6 @@ class MeetsAiApp(object):
         self.title.setObjectName("title")
         self.title.setText("Meets Ai")
         self.title.setGeometry(QtCore.QRect(100, 15, 200, 60))
-        self.title.setFont(self._font)
 
         self.closeButton = QtWidgets.QPushButton(self.navHeader)
         self.closeButton.setObjectName("closeButton")
@@ -109,7 +78,6 @@ class MeetsAiApp(object):
         self.graphPanel = QtWidgets.QFrame(self.rootWidget)
         self.graphPanel.setObjectName("hLine")
         self.graphPanel.setGeometry(QtCore.QRect(25, 290, 600, 380))
-
 
         self.graph = pg.PlotWidget(self.graphPanel)
         self.graph.setObjectName("graph")
@@ -184,459 +152,405 @@ class MeetsAiApp(object):
         self.chatButton = QtWidgets.QPushButton(self.rootWidget)   
         self.chatButton.setObjectName("chatButton")
         self.chatButton.setGeometry(QtCore.QRect(650, 580, 112.5, 90))
-        self.chatButton.setFont(self._font)
         self.chatButton.setText("Chat")
         self.chatButton.setCheckable(True)
-        self.chatButton.clicked.connect(self.updateGlow)
+        self.chatButton.clicked.connect(self.updateEffects)
 
         self.callButton = QtWidgets.QPushButton(self.rootWidget)
         self.callButton.setObjectName("callButton")
         self.callButton.setGeometry(QtCore.QRect(762.5, 580, 112.5, 90))
-        self.chatButton.setFont(self._font)
         self.callButton.setCheckable(True)
         self.callButton.setText("Call")
-        self.callButton.clicked.connect(self.updateGlow)
+        self.callButton.clicked.connect(self.updateEffects)
 
         self.appButton = QtWidgets.QPushButton(self.rootWidget)
         self.appButton.setObjectName("appButton")
         self.appButton.setGeometry(QtCore.QRect(650, 690, 225, 80))
         self.appButton.setCheckable(True)
-        self.appButton.clicked.connect(self.updateGlow)
+        self.appButton.clicked.connect(self.updateEffects)
 
-        self.getTheme()
         self.updateTheme()
-
-    def toggleTheme(self):
-        if self._theme == "dark":
-            self._theme = "light"
-        elif self._theme == "light":
-            self._theme = "dark"
-
-        self.getTheme()
-        self.updateTheme()
-
-    def getTheme(self):
-        if self._theme == "dark":
-            self._baseColor = "#232323"
-            self._headerColor = "#1F1F1F"
-            self._panelColor = "#2E2E2E"
-            self._textColor = "#FFFFFF"
-            self._disabledTextColor = "#7D7D7D"
-            self._activeTextColor = "#FFFFFF"
-            self._logoIconPath = "icons/dark/logo_white.svg"
-            self._minIconPath = "icons/dark/minimize_white.svg"
-            self._closeIconPath = "icons/dark/close_white.svg"
-            self._bugIconPath = "icons/dark/bug_white.svg"
-            self._themeIconPath ="icons/dark/light_mode_white.svg"
-            self._startIconPath = "icons/dark/start_white.svg"
-            self._stopIconPath = "icons/dark/stop_white.svg"
-            self._hoverColor = "rgba(255, 255, 255, 0.1)"
-            self._headerShadow = QtGui.QColor(0, 0, 0, 255)
-            self._shadow = QtGui.QColor(0, 0, 0, 60)
-            self._upperPanelColor = "#373737"
-
-        elif self._theme == "light":
-            self._baseColor = "#EBEBEB"
-            self._headerColor = "#FFFFFF"
-            self._panelColor = "#FFFFFF"
-            self._textColor = "#000000"
-            self._disabledTextColor = "#C0C0C0"
-            self._activeTextColor = "#FFFFFF"
-            self._logoIconPath = "icons/light/logo_black.svg"
-            self._minIconPath = "icons/light/minimize_black.svg"
-            self._closeIconPath = "icons/light/close_black.svg"
-            self._bugIconPath = "icons/light/bug_black.svg"
-            self._themeIconPath ="icons/light/dark_mode_black.svg"
-            self._startIconPath = "icons/light/start_black.svg"
-            self._stopIconPath = "icons/light/stop_black.svg"
-            self._hoverColor = "rgba(0, 0, 0, 0.1)"
-            self._shadow = QtGui.QColor(0, 0, 0, 30)
-            self._headerShadow = self._shadow
-            self._upperPanelColor = "#FFFFFF"
-        
-        self.updateGlow()
+        self.updateEffects()
         self.updateDisplays(0.0)
 
+    def toggleTheme(self):
+        if self._theme._theme == "dark":
+            self._theme = theme.LightTheme()
+        else:
+            self._theme = theme.DarkTheme()
+
+        self.updateTheme()
+        self.updateEffects()
+
     def updateTheme(self):
-        self.root.setWindowIcon(QtGui.QIcon(self._logoIconPath))
+        self.root.setWindowIcon(self._theme._logoIcon)
+        self.root.setFont(self._theme._font)
         self.rootWidget.setStyleSheet(
-            f"background: {self._baseColor};"
-            "font-size: 25px;"
+            f"background: {self._theme._base};\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
         navShadow = QtWidgets.QGraphicsDropShadowEffect(self.navHeader)
         navShadow.setOffset(0, 0)
         navShadow.setBlurRadius(25)
-        navShadow.setColor(self._headerShadow)
+        navShadow.setColor(QtGui.QColor(self._theme._shadow))
         self.navHeader.setGraphicsEffect(navShadow)
 
         self.navHeader.setStyleSheet(
-            f"background: {self._headerColor};\n"
+            f"background: {self._theme._base};\n"
             f"border-bottom-left-radius: 50px;"
         )
 
-        logoIcon = QtGui.QIcon()
-        logoIcon.addPixmap(QtGui.QPixmap(self._logoIconPath))
-        self.logo.setIcon(logoIcon)
+        self.logo.setIcon(self._theme._logoIcon)
         self.logo.setIconSize(QtCore.QSize(100, 100))
         self.logo.setStyleSheet(
             "background: transparent;"
         )
 
+        self.title.setFont(self._theme._font)
         self.title.setStyleSheet(
-            f"color: {self._textColor};\n"
-            "font-weight: 100;\n"
-            "font-size: 45px;"
+            f"color: {self._theme._primary}; \n"
+            f"font-size: {self._theme._fontTitleSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
-        closeIcon = QtGui.QIcon()
-        closeIcon.addPixmap(QtGui.QPixmap(self._closeIconPath))
-        self.closeButton.setIcon(closeIcon)
+        self.closeButton.setIcon(self._theme._closeIcon)
         self.closeButton.setIconSize(QtCore.QSize(55, 55))
         self.closeButton.setStyleSheet(
             "#closeButton:hover { \n"
-            f"background-color: {self._hoverColor};\n"
+            f"background-color: {self._theme._hoverAccent};\n"
             "}"
         )
 
-        minIcon = QtGui.QIcon()
-        minIcon.addPixmap(QtGui.QPixmap(self._minIconPath))
-        self.minButton.setIcon(minIcon)
+        self.minButton.setIcon(self._theme._minimizeIcon)
         self.minButton.setIconSize(QtCore.QSize(30, 30))
         self.minButton.setStyleSheet(
             "#minButton:hover { \n"
-            f"background-color: {self._hoverColor};\n"
+            f"background-color: {self._theme._hover};\n"
             "}"
         )
 
-        self.hLine.setStyleSheet(f"background: {self._textColor};")
+        self.hLine.setStyleSheet(f"background: {self._theme._primary};")
 
-        bugIcon = QtGui.QIcon()
-        bugIcon.addPixmap(QtGui.QPixmap(self._bugIconPath))
-        self.bugButton.setIcon(bugIcon)
+        self.bugButton.setIcon(self._theme._bugIcon)
         self.bugButton.setIconSize(QtCore.QSize(30, 30))
         self.bugButton.setStyleSheet(
             "#bugButton:hover { \n"
-            f"background-color: {self._hoverColor};\n"
+            f"background-color: {self._theme._hover};\n"
             "}"
         )
 
-        themeIcon = QtGui.QIcon()
-        themeIcon.addPixmap(QtGui.QPixmap(self._themeIconPath))
-        self.themeButton.setIcon(themeIcon)
+        self.themeButton.setIcon(self._theme._modeIcon)
         self.themeButton.setIconSize(QtCore.QSize(30, 30))
         self.themeButton.setStyleSheet(
             "#themeButton:hover { \n"
-            f"background-color: {self._hoverColor};\n"
+            f"background-color: {self._theme._hover};\n"
             "}"
         )
 
         messageShadow = QtWidgets.QGraphicsDropShadowEffect(self.messagePanel)
         messageShadow.setOffset(0, 0)
         messageShadow.setBlurRadius(15)
-        messageShadow.setColor(self._shadow)
+        messageShadow.setColor(QtGui.QColor(self._theme._shadow))
         self.messagePanel.setGraphicsEffect(messageShadow)
-
+        self.messagePanel.setFont(self._theme._font)
         self.messagePanel.setStyleSheet(
-            f"background: {self._panelColor};\n"
-            f"color: {self._textColor};\n"
+            f"background: {self._theme._panel};\n"
+            f"color: {self._theme._primary};\n"
             "border-radius: 15px;\n"
             "padding: 10px;\n"
-            "font-weight: 100;"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
         responseShadow = QtWidgets.QGraphicsDropShadowEffect(self.responsePanel)
         responseShadow.setOffset(0, 0)
         responseShadow.setBlurRadius(15)
-        responseShadow.setColor(self._shadow)
+        responseShadow.setColor(QtGui.QColor(self._theme._shadow))
         self.responsePanel.setGraphicsEffect(responseShadow)
-
+        self.responsePanel.setFont(self._theme._font)
         self.responsePanel.setStyleSheet(
-            f"background: {self._panelColor};\n"
-            f"color: {self._textColor};\n"
+            f"background: {self._theme._panel};\n"
+            f"color: {self._theme._primary};\n"
             "border-radius: 15px;\n"
             "padding: 10px;\n"
-            "font-weight: 100;"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
+        self.usersLabel.setFont(self._theme._font)
         self.usersLabel.setStyleSheet(
-            f"background: {self._upperPanelColor};\n"
-            f"color: {self._textColor};\n"
+            f"background: {self._theme._subpanel};\n"
+            f"color: {self._theme._primary};\n"
             "border-radius: 15px;\n"
-            "font-weight: 100;\n"
-            "font-size: 15px;"
+            f"font-size: {self._theme._fontSmallTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
         self.graphPanel.setStyleSheet(
-            f"background: {self._panelColor};\n"
-
-            "border-radius: 15px;\n"
+            f"background: {self._theme._panel};\n"
+            "border-radius: 15px;"
         )
 
         graphShadow = QtWidgets.QGraphicsDropShadowEffect(self.graphPanel)
         graphShadow.setOffset(0, 0)
         graphShadow.setBlurRadius(15)
-        graphShadow.setColor(self._shadow)
+        graphShadow.setColor(QtGui.QColor(self._theme._shadow))
         self.graphPanel.setGraphicsEffect(graphShadow)
 
         self.graph.setBackground(None)
 
         self.settingsPanel.setStyleSheet(
-            f"background: {self._panelColor};\n"
+            f"background: {self._theme._panel};\n"
+            f"color: {self._theme._primary};\n"
             "border-radius: 15px;\n"
             "padding: 15px;\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
         settingsShadow = QtWidgets.QGraphicsDropShadowEffect(self.settingsPanel)
         settingsShadow.setOffset(0, 0)
         settingsShadow.setBlurRadius(15)
-        settingsShadow.setColor(self._shadow)
+        settingsShadow.setColor(QtGui.QColor(self._theme._shadow))
         self.settingsPanel.setGraphicsEffect(settingsShadow)
 
+        self.settingsLabel.setFont(self._theme._font)
         self.settingsLabel.setStyleSheet(
-            "font-weight: 100;\n"
-            f"color: {self._textColor};\n"
-            "background: transparent;"
+            "background: transparent;\n"
+            f"color: {self._theme._primary};\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
         self.sLine.setStyleSheet(
-            f"background: {self._textColor};\n"
+            f"background: {self._theme._primary};"
         )
 
         self.slider.setStyleSheet(
-            "#slider:groove {"
-            f"""background-color: {self._panelColor}; 
-            """
+            "#slider:groove { \n"
+            f"background-color: {self._theme._panel};"
             "}\n"
 
-            "#slider:handle {"
-            f"""background: #FFFFFF;
-            width: 50px;
-            border-radius: 25px;
-            border: 1px solid {self._baseColor};
-            """
+            "#slider:handle { \n"
+            f"background: {self._theme._primaryHighlight};\n"
+            "width: 50px;\n"
+            "border-radius: 25px;\n"
+            f"border: 1px solid {self._theme._hover};"
             "}\n"
 
-            "#slider:add-page {"
-            f"""
-            background: {self._upperPanelColor};
-            border-radius: 0;
-            border-bottom-right-radius: 25px;
-            border-top-right-radius: 25px;
-            """
+            "#slider:add-page { \n"
+            f"background: {self._theme._subpanel};\n"
+            "border-radius: 0;\n"
+            "border-bottom-right-radius: 25px;\n"
+            "border-top-right-radius: 25px;\n"
             "}\n"
 
-            "#slider:sub-page {"
-            f"""
-            background: {self._glowTransparent};
-            border: 1px solid {self._glowColor};
-            border-radius: 0;
-            border-bottom-left-radius: 25px;
-            border-top-left-radius: 25px;
-            """
-            "}\n"
+            "#slider:sub-page { \n"
+            f"background: {self._theme._accentDim};\n"
+            f"border: 1px solid {self._theme._accent};\n"
+            "border-radius: 0;\n"
+            "border-bottom-left-radius: 25px;\n"
+            "border-top-left-radius: 25px;\n"
+            "}"
         )
 
-        windowShadow = QtWidgets.QGraphicsDropShadowEffect(self.window)
-        windowShadow.setOffset(0, 0)
-        windowShadow.setBlurRadius(15)
-        windowShadow.setColor(self._shadow)
-        self.window.setGraphicsEffect(windowShadow)
-
+        self.window.setFont(self._theme._font)
         self.window.setStyleSheet(
-            f"background: {self._upperPanelColor};\n"
-            "border: none;"
-            "font-weight: 100;\n"
-            f"color: {self._textColor};\n"
+            f"background: {self._theme._subpanel};\n"
+            "border: none;\n"
+            f"color: {self._theme._primary};\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
-
 
         self.sLine2.setStyleSheet(
-            f"background: {self._textColor};"
+            f"background: {self._theme._primary};"
         )
 
         self.barPanel.setStyleSheet(
-            f"background: {self._panelColor};\n"
-            "border-radius: 15px;\n" 
+            f"background: {self._theme._panel};\n"
+            "border-radius: 15px;" 
         )
 
         self.bLine.setStyleSheet(
-            f"background: {self._textColor};\n"
+            f"background: {self._theme._primary};"
         )
 
+        self.bLabelMax.setFont(self._theme._font)
         self.bLabelMax.setStyleSheet(
-            f"color: {self._textColor};\n"
-            "font-weight: 100;"
             f"background: transparent;\n"
+            f"color: {self._theme._primary};\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
         barShadow = QtWidgets.QGraphicsDropShadowEffect(self.barPanel)
         barShadow.setOffset(0, 0)
         barShadow.setBlurRadius(15)
-        barShadow.setColor(self._shadow)
+        barShadow.setColor(QtGui.QColor(self._theme._shadow))
         self.barPanel.setGraphicsEffect(barShadow)
 
         self.bar.setStyleSheet(
-            f"background: {self._glowTransparent};\n"
-            f"border: 1px solid {self._glowColor};\n"
+            f"background: {self._theme._accentDim};\n"
+            f"border: 1px solid {self._theme._accent};\n"
             "border-top-left-radius: 10px;\n"
             "border-top-right-radius: 10px;\n"
             "border-bottom-left-radius: 0px;\n"
-            "border-bottom-right-radius: 0px;\n"
+            "border-bottom-right-radius: 0px;"
         )
-
-        barGlow = QtWidgets.QGraphicsDropShadowEffect(self.bar)
-        barGlow.setOffset(0, 0)
-        barGlow.setBlurRadius(15)
-        barGlow.setColor(self._glow)
-        self.bar.setGraphicsEffect(barGlow)
-
+        self.bLabelMin.setFont(self._theme._font)
         self.bLabelMin.setStyleSheet(
-            f"color: {self._textColor};\n"
-            "font-weight: 100;\n"
-            f"background: transparent;\n"
+            "background: transparent;\n"
+            f"color: {self._theme._primary};\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
         self.bLine2.setStyleSheet(
-            f"background: {self._textColor};\n"
+            f"background: {self._theme._primary};\n"
         )
 
+        self.bLabel.setFont(self._theme._font)
         self.bLabel.setStyleSheet(
-            "text-align: center;\n"
-            f"color: {self._textColor};\n"
-            "font-weight: 100;\n"
-            f"background: transparent;\n"
+            "background: transparent;\n"
+            f"color: {self._theme._primary};\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};"
         )
 
+        self.chatButton.setFont(self._theme._font)
         self.chatButton.setStyleSheet(
-            "#chatButton {"
-            f"""border-bottom-left-radius: 25px;
-            border-top-left-radius: 25px;\n"""
-            f"""background: {self._panelColor};
-            color: {self._disabledTextColor};
-            font-weight: 100;\n"""
-            "font-size: 25px;}\n"
-
-            "#chatButton:hover {"
-            f"background: {self._hoverColor};"
+            "#chatButton { \n"
+            f"background: {self._theme._panel};\n"
+            f"color: {self._theme._hover};\n"
+            "border-bottom-left-radius: 25px;\n"
+            "border-top-left-radius: 25px;\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};\n"
             "}\n"
 
-            "#chatButton:checked {"
-            f"""border: 1px solid {self._glowColor};
-            border-right: none;
-            color: {self._activeTextColor};
-            background: {self._glowTransparent};"""
+            "#chatButton:hover { \n"
+            f"background: {self._theme._hover}; \n"
             "}\n"
 
-            "#chatButton:checked:hover {"
-            f"background: {self._glowColor};"
+            "#chatButton:checked { \n"
+            f"background: {self._theme._accentDim};\n"
+            f"color: {self._theme._primaryHighlight};\n"
+            f"border: 1px solid {self._theme._accent};\n"
+            "border-right: none;\n"
             "}\n"
+
+            "#chatButton:checked:hover { \n"
+            f"background: {self._theme._accent};\n"
+            "}"
         )
 
+        self.callButton.setFont(self._theme._font)
         self.callButton.setStyleSheet(
-            "#callButton {"
-            f"""border-bottom-right-radius: 25px;
-            border-top-right-radius: 25px;\n"""
-            f"""background: {self._panelColor};
-            color: {self._disabledTextColor};
-            font-weight: 100;\n"""
-            "font-size: 25px;}"
-
-            "#callButton:hover {"
-            f"background: {self._hoverColor};"
+            "#callButton { \n"
+            f"background: {self._theme._panel};\n"
+            f"color: {self._theme._hover};\n"
+            "border-bottom-right-radius: 25px;\n"
+            "border-top-right-radius: 25px;\n"
+            f"font-size: {self._theme._fontTextSize};\n"
+            f"font-weight: {self._theme._fontWeight};\n"
             "}\n"
 
-            "#callButton:checked {"
-            f"""border: 1px solid {self._glowColor};
-            border-left: none;
-            color: {self._activeTextColor};
-            background: {self._glowTransparent};"""
+            "#callButton:hover { \n"
+            f"background: {self._theme._hover}; \n"
             "}\n"
 
-            "#callButton:checked:hover {"
-            f"background: {self._glowColor};"
+            "#callButton:checked { \n"
+            f"background: {self._theme._accentDim};\n"
+            f"color: {self._theme._primaryHighlight};\n"
+            f"border: 1px solid {self._theme._accent};\n"
+            "border-right: none;\n"
             "}\n"
+
+            "#callButton:checked:hover { \n"
+            f"background: {self._theme._accent};\n"
+            "}"
         )
 
         self.appButton.setStyleSheet(
-            "#appButton {"
-            f"background: {self._panelColor};"
-            "border-radius: 40px;}\n"
+            "#appButton { \n"
+            f"background: {self._theme._panel};\n"
+            "border-radius: 40px;\n"
+            "}\n"
 
             "#appButton:hover {"
-            f"background: {self._hoverColor};"
+            f"background: {self._theme._hover};\n"
             "}\n"
 
-            "#appButton:checked {"
-            f"""border: 1px solid {self._glowColor};
-            background: {self._glowTransparent};"""
+            "#appButton:checked { \n"
+            f"border: 1px solid {self._theme._accent};\n"
+            f"background: {self._theme._accentDim};\n"
             "}\n"
 
-            "#appButton:checked:hover {"
-            f"background: {self._glowColor};"
-            "}\n"
+            "#appButton:checked:hover { \n"
+            f"background: {self._theme._accent};\n"
+            "}"
         )
 
-    def updateGlow(self):
+    def updateEffects(self):
         if self.appButton.isChecked():
-            stopIcon = QtGui.QIcon()
-            stopIcon.addPixmap(QtGui.QPixmap(self._stopIconPath))
-            self.appButton.setIcon(stopIcon)
+            self.appButton.setIcon(self._theme._stopIcon)
             appButtonGlow = QtWidgets.QGraphicsDropShadowEffect(self.appButton)
             appButtonGlow.setOffset(0, 0)
             appButtonGlow.setBlurRadius(25)
-            appButtonGlow.setColor(self._glow)
+            appButtonGlow.setColor(QtGui.QColor(self._theme._accent))
             self.appButton.setGraphicsEffect(appButtonGlow)
         else:
-            runIcon = QtGui.QIcon()
-            runIcon.addPixmap(QtGui.QPixmap(self._startIconPath))
-            self.appButton.setIcon(runIcon)
+            self.appButton.setIcon(self._theme._startIcon)
             appButtonShadow = QtWidgets.QGraphicsDropShadowEffect(self.appButton)
             appButtonShadow.setOffset(0, 0)
             appButtonShadow.setBlurRadius(25)
-            appButtonShadow.setColor(self._shadow)
-            self.chatButton.setGraphicsEffect(appButtonShadow)
-            self.appButton.setGraphicsEffect(None)
+            appButtonShadow.setColor(QtGui.QColor(self._theme._shadow))
+            self.appButton.setGraphicsEffect(appButtonShadow)
         self.appButton.setIconSize(QtCore.QSize(40, 40))
         
         if self.chatButton.isChecked():
             chatButtonGlow = QtWidgets.QGraphicsDropShadowEffect(self.chatButton)
             chatButtonGlow.setOffset(0, 0)
             chatButtonGlow.setBlurRadius(25)
-            chatButtonGlow.setColor(self._glow)
+            chatButtonGlow.setColor(QtGui.QColor(self._theme._accent))
+            self.chatButton.setFont(self._theme._font)
             self.chatButton.setGraphicsEffect(chatButtonGlow)
         else:
             chatButtonShadow = QtWidgets.QGraphicsDropShadowEffect(self.chatButton)
             chatButtonShadow.setOffset(0, 0)
             chatButtonShadow.setBlurRadius(25)
-            chatButtonShadow.setColor(self._shadow)
+            chatButtonShadow.setColor(QtGui.QColor(self._theme._shadow))
+            self.chatButton.setFont(self._theme._font)
             self.chatButton.setGraphicsEffect(chatButtonShadow)
         
         if self.callButton.isChecked():
             callButtonGlow = QtWidgets.QGraphicsDropShadowEffect(self.callButton)
             callButtonGlow.setOffset(0, 0)
             callButtonGlow.setBlurRadius(25)
-            callButtonGlow.setColor(self._glow)
+            callButtonGlow.setColor(QtGui.QColor(self._theme._accent))
+            self.callButton.setFont(self._theme._font)
             self.callButton.setGraphicsEffect(callButtonGlow)
         else:
             callButtonShadow = QtWidgets.QGraphicsDropShadowEffect(self.callButton)
             callButtonShadow.setOffset(0, 0)
             callButtonShadow.setBlurRadius(25)
-            callButtonShadow.setColor(self._shadow)
+            callButtonShadow.setColor(QtGui.QColor(self._theme._shadow))
+            self.callButton.setFont(self._theme._font)
             self.callButton.setGraphicsEffect(callButtonShadow)
 
     def updateDisplays(self, c):
-        h = 340*c
-        y = (50 + 340*(1-c))
-        self.bar.setGeometry(QtCore.QRect(75, y, 75, h))
+        y = 50 + 340 * (1 - c)
+        self.bar.setGeometry(QtCore.QRect(75, y, 75, (340 * c)))
         self.updateGraph(c)
 
     def updateGraph(self, c):
-        self._data = self._data[1:]
-        self._data.append(c)
+        self._graphData = self._graphData[1:]
+        self._graphData.append(c)
 
-        self._datalabel = self._datalabel[1:]
-        self._datalabel.append(self._datalabel[len(self._datalabel) - 1] + 1)
+        self._graphDataLabel = self._graphDataLabel[1:]
+        self._graphDataLabel.append(self._graphDataLabel[len(self._graphDataLabel) - 1] + 1)
         
-
-        self.graph.plot(self._datalabel, self._data, pen=self._pen, symbol='o', symbolSize=5, symbolPen=self._symPen, symbolBrush=self._symBrush)
+        self.graph.plot(self._graphDataLabel, self._graphData, pen=self._theme._gPen, symbol='o', symbolSize=5, symbolPen=self._theme._pPen, symbolBrush=self._theme._pBrush)
