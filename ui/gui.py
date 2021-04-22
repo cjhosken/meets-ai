@@ -2,7 +2,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
 import ui.theme as theme
 import config
-
 class MeetsAiApp(object):
     if config._defaultTheme == "dark":
         _theme = theme.DarkTheme()
@@ -237,7 +236,7 @@ class MeetsAiApp(object):
         self.bugButton.setIconSize(QtCore.QSize(25, 25))
         self.bugButton.setStyleSheet(
             "#bugButton:hover { \n"
-            f"background-color: {self._theme._hover};\n"
+            f"background-color: qlineargradient(x1:0.5 y1:0, x2:0.5, y2:1, stop:0 {self._theme._hover}, stop:1 transparent);\n"
             "}"
         )
 
@@ -245,7 +244,7 @@ class MeetsAiApp(object):
         self.themeButton.setIconSize(QtCore.QSize(25, 25))
         self.themeButton.setStyleSheet(
             "#themeButton:hover { \n"
-            f"background-color: {self._theme._hover};\n"
+            f"background-color: qlineargradient(x1:0.5 y1:0, x2:0.5, y2:1, stop:0 {self._theme._hover}, stop:1 transparent);\n"
             "}"
         )
 
@@ -556,3 +555,11 @@ class MeetsAiApp(object):
         self._graphDataLabel.append(self._graphDataLabel[len(self._graphDataLabel) - 1] + 1)
         
         self.graph.plot(self._graphDataLabel, self._graphData, pen=self._theme._gPen, symbol='o', symbolSize=5, symbolPen=self._theme._pPen, symbolBrush=self._theme._pBrush)
+    
+    def showErrorBox(self, title, msg):
+        errorBox = QtWidgets.QMessageBox()
+        errorBox.setObjectName("errorBox")
+        errorBox.setWindowTitle(title)
+        errorBox.setText(msg)
+        errorBox.setIcon(QtWidgets.QMessageBox.Warning)
+        errorBox.exec_()

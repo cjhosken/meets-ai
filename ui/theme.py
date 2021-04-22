@@ -30,6 +30,7 @@ class Theme:
         self._startIcon = ""
         self._stopIcon = ""
 
+
         self.getGraphTheme()
 
     def getGraphTheme(self):

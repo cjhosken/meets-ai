@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from ui.gui import MeetsAiApp
 from selenium import webdriver
 import webbrowser
@@ -7,6 +7,7 @@ import ctypes
 import sys
 import threading
 import chat
+import config
 
 class MeetsAi(QMainWindow, MeetsAiApp):
     def __init__(self):
@@ -38,17 +39,14 @@ class MeetsAi(QMainWindow, MeetsAiApp):
             if self._driver is not None:
                 self._tabid = self.app.window.text()
                 if len(self._tabid) <= 0 or not self._tabid.isdigit():
-                    self._tabid = 1
-                else:
-                    self._tabid = int(self._tabid)
+                    self._tabid = config._defaultWindowID
                 
                 if self._thread is None:
                     self._thread = threading.Thread(target=self.chat)
 
                 self._thread.start()
                 self._running = True
-            else:
-                print("ERROR")
+            
         else:
             if self._running:
                 self._thread.join()
@@ -65,8 +63,7 @@ class MeetsAi(QMainWindow, MeetsAiApp):
             except Exception as e:
                 self.app.appButton.setChecked(False)
                 self.app.updateEffects()
-                print(e)
-                print("ERROR: Try running the browser.py file first.")
+                self.app.showErrorBox("Connection Error!", "Make sure browser.py is running.")
                 return None
 
     def chat(self):
@@ -75,7 +72,7 @@ class MeetsAi(QMainWindow, MeetsAiApp):
             chatActive = self.app.chatButton.isChecked()
             t = self.app.slider.value() / 100
 
-            updated, msg, res, conf, users = chat.chat(self._driver, self._tabid, callActive, chatActive, t)
+            updated, msg, res, conf, users = chat.chat(self.app, self._driver, int(self._tabid), callActive, chatActive, t)
 
             if updated:
                 self.updateUI(msg, res, conf, users)

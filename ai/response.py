@@ -56,10 +56,10 @@ def getResponse(ints, intents_json):
             if(i['tag']== tag):
                 result = random.choice(i['responses'])
                 break
-        return result, tag
-    return None, None
+        return result
+    return None
 
 def chatbot_response(msg):
     ints, conf = predict_class(msg, model)
-    res, tag = getResponse(ints, intents)
-    return res, tag, conf
+    res = getResponse(ints, intents)
+    return res, conf
