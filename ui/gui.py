@@ -467,7 +467,7 @@ class MeetsAiApp(object):
             f"background: {self._theme._accentDim};\n"
             f"color: {self._theme._primaryHighlight};\n"
             f"border: 1px solid {self._theme._accent};\n"
-            "border-right: none;\n"
+            "border-left: none;\n"
             "}\n"
 
             "#callButton:checked:hover { \n"
