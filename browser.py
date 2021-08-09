@@ -21,7 +21,7 @@ opt.add_experimental_option("prefs", { \
     "profile.default_content_setting_values.notifications": 1
 })
 
-driver = webdriver.Chrome(options=opt, executable_path='C:\Program Files (x86)\chromedriver.exe')
+driver = webdriver.Chrome(options=opt, executable_path='./chromedriver.exe')
 url = driver.command_executor._url
 id = driver.session_id
 
@@ -46,7 +46,7 @@ def login(driver):
     passwordEl.click()
     passwordEl.send_keys(config._password)
 
-    next=driver.find_element_by_xpath('//*[@id="passwordNext"]/div/button/div[2]')
+    next=driver.find_element_by_css_selector('#passwordNext button')
     next.click()
 
     print("Google Sign-in Complete.")

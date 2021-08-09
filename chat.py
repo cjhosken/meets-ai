@@ -8,13 +8,13 @@ def chat(app, driver, id, callActive, chatActive, thresh):
     driver.switch_to.window(window)
 
     try:
-        chatBoxWindow = "//*[@id='ow3']/div[1]/div/div[9]/div[3]/div[4]/div/div[2]/div[2]/div[2]/span[2]/div"
+        chatBoxWindow = "/html/body/div[1]/c-wiz/div[1]/div/div[9]/div[3]/div[4]/div[2]/div[2]/div"
     except:
         onlineUsers = 0
         app.showErrorBox("XPath Error!", "Chatbox could not be found.")
         return False, "", "", 0.0, 0
 
-    onlineUsers = driver.find_element_by_xpath("//*[@id='ow3']/div[1]/div/div[9]/div[3]/div[4]/div/div[2]/div[2]/div[1]/div[1]/span/div/span[2]").text.lower()
+    onlineUsers = driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div[1]/div/div[9]/div[3]/div[10]/div[3]/div[2]/div/div/div[2]/div/div").text.lower()
     onlineUsers = onlineUsers[1:][:-1]
     chatBoxEl = driver.find_element_by_xpath(f'{chatBoxWindow}/div[4]/div[1]/div[1]/div[2]/textarea')
 
