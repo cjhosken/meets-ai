@@ -32,7 +32,12 @@
                             "xD",
                             "i die",
                             "lmao",
-                            "good"
+                            "good",
+                            "oh for sure",
+                            "oof ok",
+                            "oh ho",
+                            "oh boy",
+                            "nice"
                     ],
                     "responses": [
                             " "
@@ -81,15 +86,13 @@
                             "i want to go to a bts concert",
                             "i need money",
                             "i need to watch greys anatomy"
-
-
-
                     ],
                     "responses": [
                             "nice",
                             "XD",
                             "lol",
-                            "cool"
+                            "cool",
+                            "sick"
                     ],
                     "context": [
                             ""
@@ -101,7 +104,10 @@
                             "hey",
                             "yo",
                             "um",
-                            "ummm"
+                            "ummm",
+                            "chris",
+                            "cj",
+                            "christopher"
                     ],
                     "responses": [
                             "ye?",
@@ -114,6 +120,22 @@
                             ""
                     ]
             },
+            {
+                "tag": "myname",
+                "patterns": [
+                        "whats your name",
+                        "who are you",
+                        "and you are"
+                ],
+                "responses": [
+                        "chris",
+                        "you can call me chris",
+                        "im chris"
+                ],
+                "context": [
+                        ""
+                ]
+        },
             {
                     "tag": "greeting",
                     "patterns": [
@@ -229,7 +251,11 @@
                             "ur so mean",
                             "you're heartless",
                             "i dont care about your favourite",
-                            "i dont care"
+                            "i dont care",
+                            "you're dumb",
+                            "kill me",
+                            "fight me",
+                            "that wasnt very nice of you"
                     ],
                     "responses": [
                             "XD",
@@ -285,7 +311,7 @@
                             "correct",
                             "yes good job",
                             "great job",
-                            "great job"
+                            "good idea"
                     ],
                     "responses": [
                             ":)",
@@ -385,7 +411,8 @@
                             "what is the answer to",
                             "what do you think about this question",
                             "do you have the answer to this question?",
-                            "what is the answer"
+                            "what is the answer",
+                            "do we have hw"
                     ],
                     "responses": [
                             "hmm",
